@@ -144,20 +144,27 @@ minikube dashboard
 ## API Endpoints
 
 ### Task Service (http://localhost:8000)
-- `GET /tasks` - Get all tasks
-- `POST /tasks` - Create new task
-- `GET /tasks/{id}` - Get specific task
-- `PUT /tasks/{id}` - Update task
-- `DELETE /tasks/{id}` - Delete task
-- `PATCH /tasks/{id}/complete` - Mark task complete
+- `GET /` - Service information
+- `GET /health` - Health check endpoint
+- `GET /api/v1/tasks` - Get all tasks
+- `POST /api/v1/tasks` - Create new task
+- `GET /api/v1/tasks/{id}` - Get specific task
+- `PUT /api/v1/tasks/{id}` - Update task
+- `DELETE /api/v1/tasks/{id}` - Delete task
+- `PATCH /api/v1/tasks/{id}/complete` - Mark task complete
+
+Interactive API Documentation: http://localhost:8000/docs
 
 ### Notification Service (http://localhost:8001)
-- `GET /reminders` - Get all reminders
-- `POST /reminders` - Create reminder
-- `GET /reminders/{id}` - Get specific reminder
-- `PUT /reminders/{id}` - Update reminder
-- `DELETE /reminders/{id}` - Delete reminder
-- `GET /notifications/history` - Get notification history
+- `GET /` - Service information
+- `GET /health` - Health check endpoint
+- `GET /api/v1/notifications` - Get all notifications
+- `POST /api/v1/notifications` - Create notification
+- `GET /api/v1/notifications/{id}` - Get specific notification
+- `PUT /api/v1/notifications/{id}` - Update notification
+- `DELETE /api/v1/notifications/{id}` - Delete notification
+
+Interactive API Documentation: http://localhost:8001/docs
 
 ## Scaling Features
 
@@ -168,13 +175,29 @@ The application implements Horizontal Pod Autoscaler (HPA) for automatic scaling
 
 ## Technology Stack
 
-- **Frontend**: Streamlit
-- **Backend APIs**: FastAPI
-- **Database**: MongoDB
-- **Containerization**: Docker
+- **Frontend**: Streamlit 1.28.1
+- **Backend APIs**: FastAPI 0.104.1
+- **Database**: MongoDB (latest)
+- **Async Driver**: Motor 3.3.2
+- **Data Validation**: Pydantic 2.5.0
+- **HTTP Client**: HTTPX 0.25.2
+- **Server**: Uvicorn 0.24.0
+- **Containerization**: Docker & Docker Compose 3.8
 - **Orchestration**: Kubernetes
-- **Scaling**: HPA
+- **Scaling**: Horizontal Pod Autoscaler (HPA)
 - **Language**: Python 3.9+
+
+## Environment Configuration
+
+### Docker Compose
+- **MongoDB**: 
+  - Port: 27017
+  - Username: admin
+  - Password: password123
+- **Task Service**: Port 8000
+- **Notification Service**: Port 8001
+- **Frontend Service**: Port 8002
+- **Network**: task_network (external)
 
 ## Development
 
