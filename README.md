@@ -203,9 +203,21 @@ The application implements Horizontal Pod Autoscaler (HPA) for automatic scaling
 
 Each microservice is maintained as a separate component with its own:
 - Dependencies (requirements.txt)
-- Dockerfile
-- Configuration
-- Database models
-- API routes
+- Dockerfile for containerization
+- Configuration management (config.py)
+- Database models with Motor async driver
+- API routes with FastAPI routers
+- Health check endpoints
+- CORS middleware configuration
 
 This ensures independent development, testing, and deployment of each service.
+
+## Service Communication
+
+- **Frontend → Task Service**: HTTP requests to `http://task-service:8000/api/v1`
+- **Frontend → Notification Service**: HTTP requests to `http://notification-service:8001/api/v1`
+- **Task Service → Notification Service**: Inter-service communication via HTTPX
+- **Notification Service → Task Service**: Inter-service communication via HTTPX
+- **Services → MongoDB**: Async connections via Motor driver
+
+All services include health check endpoints and graceful startup/shutdown handling with FastAPI lifespan events.
