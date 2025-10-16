@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: task-service
+  namespace: task-app
+  labels:
+    app: task-service
+spec:
+  ports:
+  - port: 8000
+    targetPort: 8000
+  selector:
+    app: task-service
+  type: ClusterIP

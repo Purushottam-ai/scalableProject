@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-service
+  namespace: task-app
+  labels:
+    app: frontend-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: frontend-service
+  template:
+    metadata:
+      labels:
+        app: frontend-service
+    spec:
+      containers:
+      - name: frontend-service
+        image: frontend-service:latest
+        imagePullPolicy: Never  # For local minikube development
+        ports:
+        - containerPort: 8002
+        envFrom:
+        - configMapRef:
+            name: frontend-service-config
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "300m"
+        livenessProbe:
+          httpGet:
+            path: /_stcore/health
+            port: 8002
+          initialDelaySeconds: 60
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /_stcore/health
+            port: 8002
+          initialDelaySeconds: 10
+          periodSeconds: 10

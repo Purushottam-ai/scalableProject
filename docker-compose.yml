@@ -1,0 +1,87 @@
+version: '3.8'
+
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - task_network
+
+  # Task Management Service
+  task-service:
+    build: ./task-service
+    container_name: task-service
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - MONGODB_URL=mongodb://admin:password123@mongodb:27017
+      - DATABASE_NAME=task_db
+      - NOTIFICATION_SERVICE_URL=http://notification-service:8001
+    depends_on:
+      - mongodb
+    networks:
+      - task_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Notification Service
+  notification-service:
+    build: ./notification-service
+    container_name: notification-service
+    restart: always
+    ports:
+      - "8001:8001"
+    environment:
+      - MONGODB_URL=mongodb://admin:password123@mongodb:27017
+      - DATABASE_NAME=notification_db
+      - TASK_SERVICE_URL=http://task-service:8000
+    depends_on:
+      - mongodb
+    networks:
+      - task_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Frontend Service
+  frontend-service:
+    build: ./frontend-service
+    container_name: frontend-service
+    restart: always
+    ports:
+      - "8002:8002"
+    environment:
+      - TASK_SERVICE_URL=http://task-service:8000/api/v1
+      - NOTIFICATION_SERVICE_URL=http://notification-service:8001/api/v1
+    depends_on:
+      - task-service
+      - notification-service
+    networks:
+      - task_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8002/_stcore/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  mongodb_data:
+
+networks:
+  task_network:
+    external: true

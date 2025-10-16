@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: notification-service
+  namespace: task-app
+  labels:
+    app: notification-service
+spec:
+  ports:
+  - port: 8001
+    targetPort: 8001
+  selector:
+    app: notification-service
+  type: ClusterIP

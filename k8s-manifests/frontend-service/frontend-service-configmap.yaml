@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-service-config
+  namespace: task-app
+data:
+  TASK_SERVICE_URL: "http://task-service:8000/api/v1"
+  NOTIFICATION_SERVICE_URL: "http://notification-service:8001/api/v1"
